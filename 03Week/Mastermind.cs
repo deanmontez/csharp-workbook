@@ -9,7 +9,7 @@ public class Program
     public static int codeSize = 4;
     
     // number of allowed attempts to crack the code
-    public static int allowedAttempts = 10;
+    public static int allowedAttempts = 3;
     
     // number of tried guesses
     public static int numTry = 0;
@@ -19,33 +19,87 @@ public class Program
     
     // game board
     public static string[][] board = new string[allowedAttempts][];
-    
-    
+
+    // user guess
+    public static char[] guess = new char[4];
+
+
     public static void Main()
     {
         CreateBoard();
         DrawBoard();
-        char[] guess = new char[4];
-        Console.WriteLine("Enter Guess:");
-        guess = Console.ReadLine().ToCharArray();
+        PromptUser();
+
+        while (!CheckSolution(guess) && numTry < allowedAttempts)
+        {
+            PromptUser();
+
+            if (numTry == allowedAttempts)
+                Console.WriteLine("You ran out of turns! The solution was " + string.Join("", solution));
+        }
+
+        Console.ReadLine();
         return;
     }
-    
+
+    public static void PromptUser()
+    {
+        Console.WriteLine("Enter Guess:");
+        guess = Console.ReadLine().ToCharArray();
+        InsertCode(guess);
+        DrawBoard();
+
+        if (CheckSolution(guess))
+            Console.WriteLine("You Won!");
+
+        return;
+    }
+
     public static bool CheckSolution(char[] guess)
     {
-        // Your code here
+        if (string.Join("", guess) == string.Join("", solution))
+        {
+            return true;
+        }
         return false;
     }
     
-    public static string GenerateHint(char[] guess)
+    public static string GenerateHint(char[] solution, char[] guess)
     {
-        // Your code here
-        return " ";
+        char[] solutionClone = (char[]) solution.Clone();
+        int correctLetterLocations = 0;
+        int correctLetters = 0;
+
+        for (var i = 0; i < codeSize; i++)
+        {
+            int targetIndex = Array.IndexOf(solutionClone, guess[i]);
+
+            //Check if any character in the guess is an exact match (position wise) in the solution
+            if (guess[i] == solutionClone[i])
+            {
+                solutionClone[i] = ' ';
+                correctLetterLocations++;
+            }
+            //Check if any character in the guess exists in the solution
+            if (targetIndex != -1)
+            {
+                solutionClone[targetIndex] = ' ';
+                correctLetters++;
+            }
+        }
+
+        return correctLetterLocations.ToString() + " - " + correctLetters.ToString();
     }
     
     public static void InsertCode(char[] guess)
     {
-        // Your code here
+        for (var i = 0; i < codeSize; i++)
+        {
+            board[numTry][i] = guess[i].ToString();
+        }
+
+        numTry++;
+
         return;
     }
     
@@ -64,11 +118,13 @@ public class Program
     
     public static void DrawBoard()
     {
+        Console.WriteLine("\n");
         for (var i = 0; i < board.Length; i++)
         {
             Console.WriteLine("|" + String.Join("|", board[i]));
         }
-        
+        Console.WriteLine("\n");
+
         return;
     }
     
