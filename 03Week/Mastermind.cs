@@ -9,7 +9,7 @@ public class Program
     public static int codeSize = 4;
     
     // number of allowed attempts to crack the code
-    public static int allowedAttempts = 3;
+    public static int allowedAttempts = 10;
     
     // number of tried guesses
     public static int numTry = 0;
@@ -26,6 +26,9 @@ public class Program
 
     public static void Main()
     {
+        GenerateRandomCode();
+        // The Random Code:
+        //Console.WriteLine(String.Join("", GenerateRandomCode()));
         CreateBoard();
         DrawBoard();
         PromptUser();
@@ -98,6 +101,8 @@ public class Program
             board[numTry][i] = guess[i].ToString();
         }
 
+        board[numTry][4] += GenerateHint(solution, guess);
+
         numTry++;
 
         return;
@@ -128,12 +133,12 @@ public class Program
         return;
     }
     
-    public static void GenerateRandomCode() {
+    public static char[] GenerateRandomCode() {
         Random rnd = new Random();
         for(var i = 0; i < codeSize; i++)
         {
             solution[i] = letters[rnd.Next(0, letters.Length)];
         }
-        return;
+        return solution;
     }
 }
