@@ -17,10 +17,17 @@ public class Program
 
         if (vowelPosition != -1)
         {
-            string firstCharacters = word.Substring(0, vowelPosition);
-            string endOfWord = word.Substring(vowelPosition);
-            word = endOfWord + firstCharacters + "ay";
-            return word.ToLower();
+            if (vowelPosition == 0)
+            {
+                return word.ToLower() + "yay";
+            }
+            else
+            {
+                string firstCharacters = word.Substring(0, vowelPosition);
+                string endOfWord = word.Substring(vowelPosition);
+                word = endOfWord + firstCharacters + "ay";
+                return word.ToLower();
+            }
         }
         else
         {
